@@ -52,7 +52,6 @@ Studiocode/
 
 1. **Start Rojo Server**
    ```powershell
-   cd "c:\Users\harry\OneDrive\RBgame\Newfolder\Studiocode"
    rojo serve
    ```
    This will start a server on `localhost:34872`
