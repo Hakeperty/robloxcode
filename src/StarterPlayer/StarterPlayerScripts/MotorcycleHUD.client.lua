@@ -559,80 +559,6 @@ function MotorcycleHUD:Create()
 	print("✓ Motorcycle HUD UI created")
 end
 
-function MotorcycleHUD:Update(seat, bike)
-	self:ResolveTelemetrySources()
-
-	local rpm = self.RPMValue and self.RPMValue.Value or 0
-	local speed = self.SpeedValue and self.SpeedValue.Value or 0
-	local gear = self.GearValue and self.GearValue.Value or "N"
-	local throttle = seat.Throttle
-	local steer = seat.Steer
-
-	-- Update UI
-	if self.ScreenGui and self.ScreenGui.Enabled then
-		local displayedRPM = math.floor(rpm / 100) * 100
-		if displayedRPM ~= self.lastDisplayedRPM then
-			self.RPMLabel.Text = tostring(displayedRPM)
-			self.lastDisplayedRPM = displayedRPM
-		end
-
-		local displayedSpeed = math.floor(speed)
-		if displayedSpeed ~= self.lastDisplayedSpeed then
-			self.SpeedLabel.Text = tostring(displayedSpeed)
-			self.lastDisplayedSpeed = displayedSpeed
-		end
-
-		if gear ~= self.lastComputedGear then
-			self.GearLabel.Text = tostring(gear)
-			if gear == "N" or gear == 0 then
-				self.GearLabel.TextColor3 = Color3.fromRGB(0, 255, 100)
-			elseif rpm > ENGINE_REDLINE_RPM * 0.9 then
-				self.GearLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
-			else
-				self.GearLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-			end
-			self.lastComputedGear = gear
-		end
-	end
-
-	-- Fire telemetry event for other scripts
-	local now = tick()
-	if self.HelmetTelemetryEvent and (now - self.lastTelemetryFire > self.telemetryMinInterval) then
-		self.lastTelemetryFire = now
-		self.HelmetTelemetryEvent:Fire({
-			rpm = rpm,
-			engineRpm = rpm,
-			speed = speed,
-			gear = gear,
-			throttle = throttle,
-			steer = steer,
-			isMounted = true,
-			TractionControl = self.TractionControl,
-			ShiftMode = self.ShiftMode,
-			bike = bike,
-			seat = seat,
-		})
-	end
-
-	-- Send telemetry data
-	local telemetryData = {
-		rpm = (self.RPMValue and self.RPMValue.Value) or 0,
-		throttle = (self.ThrottleValue and self.ThrottleValue.Value) or 0,
-		gear = (self.GearValue and self.GearValue.Value) or "N",
-		speed = speed,
-		hasRaw = self.RPMValue ~= nil,
-		hasSeatThrottle = self.ThrottleValue ~= nil,
-	}
-
-	if self.RPMValue then
-		Logger.Info("HUD", "RPM_DEBUG", { raw_rpm = self.RPMValue.Value, type = type(self.RPMValue.Value) })
-	end
-
-	self.TelemetryEvent:Fire(telemetryData)
-
-	-- Update HUD elements
-end
-
 function MotorcycleHUD:Start(seat, bike)
 	if self.CurrentSeat == seat then
 		return
@@ -646,7 +572,6 @@ function MotorcycleHUD:Start(seat, bike)
 	self.ScreenGui.Enabled = true
 
 	self:ResolveTelemetrySources()
-	self:EnsureInterfaceWatcher()
 	self:UpdateShiftModeFromTelemetry()
 
 	self.runConn = RunService.Heartbeat:Connect(function()
@@ -678,7 +603,6 @@ function MotorcycleHUD:Stop()
 		self.HelmetTelemetryEvent:Fire({ isMounted = false })
 	end
 
-	self:RestoreOldGUI()
 	self:ClearTelemetrySources()
 
 	if Logger then
