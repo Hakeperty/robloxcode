@@ -1,0 +1,25 @@
+# Roblox Studio files
+*.rbxl.lock
+*.rbxlx.lock
+
+# Build outputs
+*.rbxl
+*.rbxm
+*.rbxlx
+*.rbxmx
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/*
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Rojo
+.rojo-*

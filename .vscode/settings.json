@@ -1,0 +1,18 @@
+{
+  "luau-lsp.types.robloxSecurityLevel": "PluginSecurity",
+  "luau-lsp.require.mode": "relativeToFile",
+  "luau-lsp.require.directoryAliases": {
+    "@": "src",
+    "@ServerScriptService": "src/ServerScriptService",
+    "@ReplicatedStorage": "src/ReplicatedStorage"
+  },
+  "[lua]": {
+    "editor.formatOnSave": false
+  },
+  "files.associations": {
+    "*.lua": "lua"
+  },
+  "editor.tabSize": 4,
+  "editor.insertSpaces": false,
+  "editor.detectIndentation": false
+}
