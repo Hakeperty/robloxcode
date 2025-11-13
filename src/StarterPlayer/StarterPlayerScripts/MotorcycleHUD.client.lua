@@ -725,13 +725,11 @@ function MotorcycleHUD:SuppressOldInterface(suppress)
 			end
 
 			-- Disable all visual elements and scripts, but leave "Values" folder
-			for _, child in ipairs(interfaceGui:GetChildren()) do
-				if child.Name ~= "Values" then
-					if child:IsA("Frame") or child:IsA("TextLabel") or child:IsA("ImageLabel") then
-						child.Visible = false
-					elseif child:IsA("Script") or child:IsA("LocalScript") then
-						child.Disabled = true
-					end
+			for _, descendant in ipairs(interfaceGui:GetDescendants()) do
+				if descendant:IsA("GuiObject") and descendant.Name ~= "Values" then
+					descendant.Visible = false
+				elseif (descendant:IsA("Script") or descendant:IsA("LocalScript")) and descendant.Name ~= "Values" then
+					descendant.Disabled = true
 				end
 			end
 		end

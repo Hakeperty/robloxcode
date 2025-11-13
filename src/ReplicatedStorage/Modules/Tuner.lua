@@ -37,7 +37,7 @@ Tune.FProfileHeight = .4 --You can tune the height of the profile, making it con
 
 Tune.FTireWear = 0.7 --Dictates how fast tires wear, put to 0 to disable tire wear (UI will disappear)
 Tune.FTireCompound = 1 --The more compounds you have, the harder your tire will get towards the middle, sacrificing grip for wear
-Tune.FTireFriction = 1.1 --Your tire's friction in the best conditions.
+Tune.FTireFriction = 1.8 --Your tire's friction in the best conditions.
 Tune.FTireSpinRatio = .5 --How much friction your tires are going to lose under spinning
 Tune.FTireLockRatio = .5 --How much friction your tires are going to lose under locking up
 
@@ -47,7 +47,7 @@ Tune.RProfileHeight = .45 --You can tune the height of the profile, making it co
 
 Tune.RTireWear = 0.7 --Dictates how fast tires wear, put to 0 to disable tire wear (UI will disappear)
 Tune.RTireCompound = 1 --The more compounds you have, the harder your tire will get towards the middle, sacrificing grip for wear
-Tune.RTireFriction = 1.1 --Your tire's friction in the best conditions.
+Tune.RTireFriction = 1.8 --Your tire's friction in the best conditions.
 Tune.RTireSpinRatio = .5 --How much friction your tires are going to lose under spinning
 Tune.RTireLockRatio = .5 --How much friction your tires are going to lose under locking up
 
