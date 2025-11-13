@@ -59,7 +59,7 @@ if not root then return end
 -- Panel
 local panel = Instance.new("Frame")
 panel.Name = "Panel"
-panel.Size = UDim2.new(0, 192, 0, 210)
+panel.Size = UDim2.new(0, 192, 0, 200)
 panel.Position = UDim2.new(0, 24, 0, 120)
 panel.BackgroundColor3 = Color3.fromRGB(16, 18, 24)
 panel.BackgroundTransparency = 0.08
@@ -98,60 +98,78 @@ makeButton(panel, "ToggleOverride", "Toggle Override", posY, function()
 end)
 posY = posY + 32
 
-makeButton(panel, "RainMinus", "Rain -", posY, function()
+-- Rain controls on same row
+local rainMinusBtn = makeButton(panel, "RainMinus", "Rain -", posY, function()
 	local r = tonumber(ReplicatedStorage:GetAttribute("RainIntensity")) or 0
 	r = math.clamp(r - 0.1, 0, 1)
 	ReplicatedStorage:SetAttribute("RainIntensity", r)
 	if Logger then Logger.Info("Weather", "Rain", { value = r }) end
 end)
+rainMinusBtn.Size = UDim2.new(0, 75, 0, 28)
 
-makeButton(panel, "RainPlus", "Rain +", posY, function()
+local rainPlusBtn = makeButton(panel, "RainPlus", "Rain +", posY, function()
 	local r = tonumber(ReplicatedStorage:GetAttribute("RainIntensity")) or 0
 	r = math.clamp(r + 0.1, 0, 1)
 	ReplicatedStorage:SetAttribute("RainIntensity", r)
 	if Logger then Logger.Info("Weather", "Rain", { value = r }) end
 end)
+rainPlusBtn.Size = UDim2.new(0, 75, 0, 28)
+rainPlusBtn.Position = UDim2.new(0, 95, 0, posY)
 posY = posY + 32
 
-makeButton(panel, "WindLeft", "Wind ◄", posY, function()
+-- Wind direction controls on same row
+local windLeftBtn = makeButton(panel, "WindLeft", "Wind ◄", posY, function()
 	local dir = Vector3.new(-1,0,0)
 	ReplicatedStorage:SetAttribute("WindDirection", dir)
 	if Logger then Logger.Info("Weather", "WindDir", { x = dir.X, y = dir.Y, z = dir.Z }) end
 end)
+windLeftBtn.Size = UDim2.new(0, 75, 0, 28)
 
-makeButton(panel, "WindRight", "Wind ►", posY, function()
+local windRightBtn = makeButton(panel, "WindRight", "Wind ►", posY, function()
 	local dir = Vector3.new(1,0,0)
 	ReplicatedStorage:SetAttribute("WindDirection", dir)
 	if Logger then Logger.Info("Weather", "WindDir", { x = dir.X, y = dir.Y, z = dir.Z }) end
 end)
+windRightBtn.Size = UDim2.new(0, 75, 0, 28)
+windRightBtn.Position = UDim2.new(0, 95, 0, posY)
 posY = posY + 32
 
-makeButton(panel, "WindSpd-", "Wind -", posY, function()
+-- Wind speed controls on same row
+local windSpdMinusBtn = makeButton(panel, "WindSpd-", "Wind -", posY, function()
 	local s = tonumber(ReplicatedStorage:GetAttribute("WindSpeed")) or 0
 	s = math.max(0, s - 2)
 	ReplicatedStorage:SetAttribute("WindSpeed", s)
 	if Logger then Logger.Info("Weather", "WindSpeed", { value = s }) end
 end)
+windSpdMinusBtn.Size = UDim2.new(0, 75, 0, 28)
 
-makeButton(panel, "WindSpd+", "Wind +", posY, function()
+local windSpdPlusBtn = makeButton(panel, "WindSpd+", "Wind +", posY, function()
 	local s = tonumber(ReplicatedStorage:GetAttribute("WindSpeed")) or 0
 	s = math.min(40, s + 2)
 	ReplicatedStorage:SetAttribute("WindSpeed", s)
 	if Logger then Logger.Info("Weather", "WindSpeed", { value = s }) end
 end)
+windSpdPlusBtn.Size = UDim2.new(0, 75, 0, 28)
+windSpdPlusBtn.Position = UDim2.new(0, 95, 0, posY)
 posY = posY + 32
 
-makeButton(panel, "TimeNight", "Time: Night", posY, function()
+-- Time controls (3 buttons, smaller size)
+local timeNightBtn = makeButton(panel, "TimeNight", "Night", posY, function()
 	ReplicatedStorage:SetAttribute("ForcedClockTime", 22)
 	if Logger then Logger.Info("Weather", "ForcedClockTime", { value = 22 }) end
 end)
+timeNightBtn.Size = UDim2.new(0, 50, 0, 28)
 
-makeButton(panel, "TimeNoon", "Time: Noon", posY, function()
+local timeNoonBtn = makeButton(panel, "TimeNoon", "Noon", posY, function()
 	ReplicatedStorage:SetAttribute("ForcedClockTime", 12)
 	if Logger then Logger.Info("Weather", "ForcedClockTime", { value = 12 }) end
 end)
+timeNoonBtn.Size = UDim2.new(0, 50, 0, 28)
+timeNoonBtn.Position = UDim2.new(0, 58, 0, posY)
 
-makeButton(panel, "TimeAuto", "Time: Auto", posY, function()
+local timeAutoBtn = makeButton(panel, "TimeAuto", "Auto", posY, function()
 	ReplicatedStorage:SetAttribute("ForcedClockTime", -1)
 	if Logger then Logger.Info("Weather", "ForcedClockTime", { value = -1 }) end
 end)
+timeAutoBtn.Size = UDim2.new(0, 50, 0, 28)
+timeAutoBtn.Position = UDim2.new(0, 116, 0, posY)

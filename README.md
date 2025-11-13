@@ -32,7 +32,14 @@ Studiocode/
 
 ### Prerequisites
 
-1. **Install Rojo**
+1. **Get the Honda CBR1000RR Fireblade Model**
+   - Download from Roblox: https://create.roblox.com/store/asset/10655506812/2008-Honda-CBR1000RR-Fireblade
+   - In Roblox Studio, go to Toolbox > Inventory
+   - Find "2008 Honda CBR1000RR Fireblade" and insert it
+   - Move the model to `ReplicatedStorage > Vehicles` folder (create the Vehicles folder if needed)
+   - The game is designed to work with this specific bike model
+
+2. **Install Rojo**
    ```powershell
    # Using aftman (recommended)
    aftman add rojo-rbx/rojo
@@ -87,20 +94,103 @@ Studiocode/
 
 ### Current Implementation
 
-- **Player Management**: Automatic leaderstats creation (Coins, Distance)
-- **Bike System**: Basic bike spawning and mounting
-- **Controls**: 
-  - `E` - Mount/Dismount bike
-  - `W/S` - Forward/Backward
-  - `A/D` - Turn left/right
+#### 🏍️ Realistic Motorcycle Physics
+- **Authentic Honda CBR1000RR Fireblade simulation**
+  - Real engine specifications (178 bhp, 999cc inline-4)
+  - Accurate weight distribution and handling
+  - True-to-life top speed (299 km/h / 186 mph)
+  - Realistic 0-60 mph in 2.9 seconds
+  - 6-speed transmission with authentic gear ratios
+
+#### 🎮 Advanced Riding Dynamics
+- **Professional Handling System**
+  - 58-degree maximum lean angle
+  - Responsive steering with speed-sensitive input
+  - Realistic suspension simulation
+  - Tire physics with grip and slip modeling
+  - Weight transfer during acceleration/braking
+
+#### 🚀 Riding Assists & Features
+- **Traction Control System (TCS)** - Prevents wheel spin
+- **Anti-lock Braking System (ABS)** - Optimal braking
+- **Linked Brakes** - Front/rear brake coordination
+- **Burnout Mode** - Hold brake + throttle for tire smoke
+- **Wheelie Control** - Toggle anti-wheelie assist
+- **Dual-Clutch Transmission (DCT)** - Auto or manual shifting
+
+#### 🎨 Immersive Visual Effects
+- **Dynamic Camera System**
+  - First-person helmet camera with visor tints
+  - Speed-based FOV changes
+  - Lean angle camera tilting
+  - Camera shake for realism
+- **Particle Effects**
+  - Tire smoke during burnouts
+  - Brake dust
+  - Exhaust fumes with heat distortion
+  - Sparks from scraping
+- **Speed Lines** - Visual speed indication at high velocity
+- **Motion Blur** - Speed-based blur effects
+- **Weather System** - Dynamic rain with droplets on visor
+
+#### 🌦️ Dynamic Weather & Environment
+- **Day/Night Cycle** - 8-minute day, 4-minute night
+- **Weather System**
+  - Dynamic rain intensity
+  - Wind effects on handling
+  - Surface wetness simulation
+  - Storm with lightning flashes
+- **Lighting Effects**
+  - Automatic headlight (activates at dusk)
+  - Brake lights with intensity boost
+  - Realistic sun glare effects
+
+#### 📊 Professional HUD
+- **Speedometer** - Real-time speed display (KM/H or MPH)
+- **Tachometer** - RPM gauge with redline warning
+- **Gear Indicator** - Current gear display with color coding
+- **Instrument Cluster** - Integrated helmet cam display
+- **Performance Stats** - Speed, RPM, gear, traction status
+
+#### 🎯 Game Mechanics
+- **Economy System**
+  - Earn coins for distance traveled
+  - Speed bonus multipliers
+  - Trick bonuses (wheelies, drifts, jumps)
+  - Near-miss bonuses
+  - Perfect shift rewards
+- **Player Stats** - Coins and distance tracking via leaderstats
+
+#### 🎚️ Controls
+- **Keyboard**
+  - `W/S` or `↑/↓` - Throttle/Brake
+  - `A/D` or `←/→` - Steering
+  - `E/Q` - Shift up/down (manual mode)
+  - `Shift` - Handbrake
+  - `M` - Toggle auto/manual transmission
+  - `T` - Toggle traction control
+  - `Y` - Toggle ABS
+- **Mouse & Controller Support** - Full gamepad compatibility
 
 ### Configuration
 
-Edit `src/ReplicatedStorage/Modules/GameConfig.lua` to adjust:
-- Bike speed, turn rate, jump power
-- Economy settings (coins per meter, trick bonuses)
-- Player settings (starting coins, respawn time)
-- Map settings (gravity, day/night cycle)
+#### Game Settings
+Edit `src/ReplicatedStorage/Modules/GameConfig.lua` to customize:
+- **Bike Performance** - Speed, acceleration, handling
+- **Physics** - Weight, power, transmission ratios
+- **Visual Effects** - Enable/disable speed lines, motion blur
+- **Economy** - Coin earning rates and bonuses
+- **Gameplay** - Assists, realism mode, traffic
+- **UI Settings** - HUD colors, speed units, display options
+
+#### Advanced Tuning
+Edit `src/ReplicatedStorage/Modules/Tuner.lua` for detailed tuning:
+- Engine torque curve and power output
+- Suspension stiffness and damping
+- Tire compound and friction
+- Aerodynamics and drag coefficient
+- Brake balance and force
+- Steering geometry and responsiveness
 
 ## Development Workflow
 

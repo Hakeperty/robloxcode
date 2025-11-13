@@ -2,6 +2,7 @@
 -- Handles spawning and managing bikes in the game
 
 local ServerStorage = game:GetService("ServerStorage")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 
 local BikeSpawner = {}
@@ -9,14 +10,16 @@ BikeSpawner.SpawnPoints = workspace:WaitForChild("SpawnLocations", 10) or worksp
 
 -- Spawn a bike for a player
 function BikeSpawner:SpawnBike(player)
-	-- Look for Honda CBR bike model
-	local bikeModel = ServerStorage:FindFirstChild("2008 Honda CBR1000RR Fireblade") 
+	-- Look for Honda CBR bike model in multiple locations
+	local bikeModel = ReplicatedStorage:FindFirstChild("Vehicles") and ReplicatedStorage.Vehicles:FindFirstChild("2008 Honda CBR1000RR Fireblade")
+		or ServerStorage:FindFirstChild("2008 Honda CBR1000RR Fireblade") 
 		or ServerStorage:FindFirstChild("BikeModel")
 		or workspace:FindFirstChild("2008 Honda CBR1000RR Fireblade")
 		or workspace:FindFirstChild("BikeModel")
 	
 	if not bikeModel then
-		warn("Honda CBR bike model not found in ServerStorage or Workspace")
+		warn("Honda CBR bike model not found in ReplicatedStorage/Vehicles, ServerStorage, or Workspace")
+		warn("Please add the bike model to ReplicatedStorage > Vehicles folder")
 		return nil
 	end
 	
@@ -25,8 +28,16 @@ function BikeSpawner:SpawnBike(player)
 	
 	-- Find spawn location
 	local spawnLocation = self:FindSpawnLocation()
-	if spawnLocation then
-		newBike:MoveTo(spawnLocation)
+	if spawnLocation and newBike.PrimaryPart then
+		newBike:SetPrimaryPartCFrame(CFrame.new(spawnLocation))
+	elseif spawnLocation then
+		-- If no PrimaryPart, try to move the first BasePart
+		for _, child in ipairs(newBike:GetChildren()) do
+			if child:IsA("BasePart") then
+				child.Position = spawnLocation
+				break
+			end
+		end
 	end
 	
 	newBike.Parent = workspace
@@ -46,45 +57,47 @@ function BikeSpawner:SpawnBike(player)
 
 	-- Find the driver's seat in the bike model
 	local driverSeat = newBike:FindFirstChild("DriveSeat", true)
+		or newBike:FindFirstChild("DriverSeat", true)
+		or newBike:FindFirstChild("Seat", true)
+	
 	if not driverSeat or not driverSeat:IsA("VehicleSeat") then
 		warn("DriveSeat not found or not a VehicleSeat in the bike model.")
-		-- Try another common name for vehicle seats
-		driverSeat = newBike:FindFirstChild("Seat", true)
-		if not driverSeat or not driverSeat:IsA("VehicleSeat") then
-			warn("Also tried 'Seat', but no VehicleSeat found.")
+		-- Try to find any VehicleSeat
+		driverSeat = newBike:FindFirstChildWhichIsA("VehicleSeat", true)
+		if not driverSeat then
+			warn("No VehicleSeat found in the bike model at all.")
 			return newBike
+		else
+			print("Found VehicleSeat: " .. driverSeat.Name)
 		end
-	end
-	
-	-- Temporarily disable the kickstand script to prevent it from interfering
-	local kickstandScript = newBike:FindFirstChild("Kickstand", true)
-	if kickstandScript and kickstandScript:IsA("Script") then
-		kickstandScript.Disabled = true
-		print("Kickstand script disabled to allow seating.")
 	end
 
 	-- Move character to the seat and sit them
 	print("Moving " .. player.Name .. " to the bike seat.")
-	character:SetPrimaryPartCFrame(driverSeat.CFrame)
+	local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+	if humanoidRootPart then
+		humanoidRootPart.CFrame = driverSeat.CFrame + Vector3.new(0, 5, 0)
+	end
 	
 	-- Wait a moment for physics to settle before sitting
-	task.wait(0.1)
+	task.wait(0.2)
 
 	driverSeat:Sit(humanoid)
 	
 	-- Verify if the player is seated
+	task.wait(0.1)
 	if driverSeat.Occupant == humanoid then
 		print("Successfully seated " .. player.Name .. " on the bike.")
 	else
-		print("Failed to seat " .. player.Name .. ". They are not the occupant.")
-	end
-
-	-- Re-enable the kickstand script after a brief delay
-	if kickstandScript and kickstandScript:IsA("Script") then
-		task.delay(0.5, function()
-			kickstandScript.Disabled = false
-			print("Kickstand script re-enabled.")
-		end)
+		warn("Failed to seat " .. player.Name .. ". Attempting again...")
+		task.wait(0.1)
+		driverSeat:Sit(humanoid)
+		task.wait(0.1)
+		if driverSeat.Occupant == humanoid then
+			print("Successfully seated " .. player.Name .. " on second attempt.")
+		else
+			warn("Could not seat player on bike after multiple attempts.")
+		end
 	end
 	
 	print("Spawned bike for " .. player.Name)
