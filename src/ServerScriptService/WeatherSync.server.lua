@@ -22,11 +22,30 @@ local CONFIG = {
 
 local function mapToGameWeather(sample)
 	-- sample: { rain=0..1, windSpeed=0..?, windDir=Vector3, wetness=0..1 }
-	if typeof(sample) ~= "table" then return end
-	ReplicatedStorage:SetAttribute("RainIntensity", math.clamp(tonumber(sample.rain) or 0, 0, 1))
-	ReplicatedStorage:SetAttribute("WindSpeed", math.max(0, tonumber(sample.windSpeed) or 0))
-	ReplicatedStorage:SetAttribute("WindDirection", sample.windDir or Vector3.new(0,0,0))
-	ReplicatedStorage:SetAttribute("Wetness", math.clamp(tonumber(sample.wetness) or 0, 0, 1))
+	if typeof(sample) ~= "table" then 
+		warn("[WeatherSync] Invalid weather sample: not a table")
+		return 
+	end
+	
+	-- Validate and set rain intensity
+	if sample.rain and typeof(sample.rain) == "number" then
+		ReplicatedStorage:SetAttribute("RainIntensity", math.clamp(tonumber(sample.rain) or 0, 0, 1))
+	end
+	
+	-- Validate and set wind speed
+	if sample.windSpeed and typeof(sample.windSpeed) == "number" then
+		ReplicatedStorage:SetAttribute("WindSpeed", math.max(0, tonumber(sample.windSpeed) or 0))
+	end
+	
+	-- Validate and set wind direction
+	if sample.windDir and typeof(sample.windDir) == "Vector3" then
+		ReplicatedStorage:SetAttribute("WindDirection", sample.windDir)
+	end
+	
+	-- Validate and set wetness
+	if sample.wetness and typeof(sample.wetness) == "number" then
+		ReplicatedStorage:SetAttribute("Wetness", math.clamp(tonumber(sample.wetness) or 0, 0, 1))
+	end
 end
 
 local function fetchRealWeather()

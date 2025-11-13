@@ -41,20 +41,35 @@ end
 
 -- Setup input controls
 function BikeController:SetupControls()
-	UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	-- Clear any existing connections
+	self:CleanupConnections()
+	
+	local inputConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
 		if gameProcessed then return end
 		
 		if input.KeyCode == Enum.KeyCode.E then
 			self:ToggleBike()
 		end
 	end)
+	table.insert(self._connections, inputConnection)
 	
 	-- Update loop for bike movement
-	RunService.Heartbeat:Connect(function(deltaTime)
+	local updateConnection = RunService.Heartbeat:Connect(function(deltaTime)
 		if self.CurrentBike then
 			self:UpdateBike(deltaTime)
 		end
 	end)
+	table.insert(self._connections, updateConnection)
+end
+
+-- Cleanup connections to prevent memory leaks
+function BikeController:CleanupConnections()
+	for _, connection in ipairs(self._connections) do
+		if connection and connection.Connected then
+			connection:Disconnect()
+		end
+	end
+	self._connections = {}
 end
 
 -- Mount/dismount bike

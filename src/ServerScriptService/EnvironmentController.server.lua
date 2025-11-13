@@ -87,13 +87,19 @@ task.spawn(function()
             -- Advance time of day automatically
             local dayT = (now - startTime) / dayLengthSeconds -- 0..1
             local clockTime = (dayT * 24) % 24
-            Lighting.ClockTime = clockTime
+            
+            -- Validate clock time before setting
+            if typeof(clockTime) == "number" and not (clockTime ~= clockTime) then -- Check for NaN
+                Lighting.ClockTime = clockTime
+            end
 
             -- Expose glare based on sun height
             local sunDir = Lighting:GetSunDirection()
-            local sunUp = math.max(0, sunDir.Y)
-            local glare = sunUp -- 0 at night, 1 at noon
-            ReplicatedStorage:SetAttribute("SunGlareIntensity", glare)
+            if sunDir and typeof(sunDir) == "Vector3" then
+                local sunUp = math.max(0, sunDir.Y)
+                local glare = sunUp -- 0 at night, 1 at noon
+                ReplicatedStorage:SetAttribute("SunGlareIntensity", glare)
+            end
 
             -- Weather state machine
             if now >= (weather.nextChangeAt or 0) then

@@ -31,6 +31,11 @@ end
 
 -- Handle player joining
 function GameManager:OnPlayerAdded(player)
+	if not player or not player:IsA("Player") then
+		warn("[GameManager] Invalid player object")
+		return
+	end
+	
 	print(player.Name .. " has joined the game")
 	
 	-- Create leaderstats
@@ -51,6 +56,10 @@ end
 
 -- Handle player leaving
 function GameManager:OnPlayerRemoving(player)
+	if not player or not player:IsA("Player") then
+		return
+	end
+	
 	print(player.Name .. " has left the game")
 end
 
