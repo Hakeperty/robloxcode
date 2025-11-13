@@ -355,6 +355,12 @@ end
 
 function StartMenuGUI:PopulateBikes(container)
 	self:ResetSelectionState()
+	
+	if not container then
+		warn("[StartMenuGUI] PopulateBikes called with nil container")
+		return
+	end
+	
 	-- Clear existing bikes
 	for _, child in pairs(container:GetChildren()) do
 		if child:IsA("Frame") then
@@ -371,7 +377,22 @@ function StartMenuGUI:PopulateBikes(container)
 	-- Get bikes from ReplicatedStorage
 	local vehiclesFolder = ReplicatedStorage:FindFirstChild("Vehicles")
 	if not vehiclesFolder then
-		warn("Vehicles folder not found in ReplicatedStorage")
+		warn("[StartMenuGUI] Vehicles folder not found in ReplicatedStorage")
+		warn("Please add the 2008 Honda CBR1000RR Fireblade to ReplicatedStorage > Vehicles")
+		warn("Download from: https://create.roblox.com/store/asset/10655506812")
+		
+		-- Show helpful error message
+		local errorLabel = Instance.new("TextLabel")
+		errorLabel.Size = UDim2.new(1, -40, 0, 150)
+		errorLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
+		errorLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+		errorLabel.BackgroundTransparency = 1
+		errorLabel.Text = "⚠ No bikes available!\n\nPlease add the Honda CBR1000RR\nto ReplicatedStorage > Vehicles\n\nDownload from Roblox Toolbox\n(search: 2008 Honda CBR1000RR)"
+		errorLabel.TextColor3 = Color3.fromRGB(255, 180, 80)
+		errorLabel.TextSize = 18
+		errorLabel.Font = Enum.Font.GothamBold
+		errorLabel.TextWrapped = true
+		errorLabel.Parent = container
 		return
 	end
 	

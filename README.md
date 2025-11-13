@@ -32,7 +32,14 @@ Studiocode/
 
 ### Prerequisites
 
-1. **Install Rojo**
+1. **Get the Honda CBR1000RR Fireblade Model**
+   - Download from Roblox: https://create.roblox.com/store/asset/10655506812/2008-Honda-CBR1000RR-Fireblade
+   - In Roblox Studio, go to Toolbox > Inventory
+   - Find "2008 Honda CBR1000RR Fireblade" and insert it
+   - Move the model to `ReplicatedStorage > Vehicles` folder (create the Vehicles folder if needed)
+   - The game is designed to work with this specific bike model
+
+2. **Install Rojo**
    ```powershell
    # Using aftman (recommended)
    aftman add rojo-rbx/rojo

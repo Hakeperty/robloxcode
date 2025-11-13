@@ -41,7 +41,17 @@ function VehicleSpawner:SpawnVehicle(player, vehicleName)
 	-- Find spawn location
 	local spawnLocation = self:FindSpawnLocation(player)
 	if spawnLocation then
-		newVehicle:MoveTo(spawnLocation)
+		if newVehicle.PrimaryPart then
+			newVehicle:SetPrimaryPartCFrame(CFrame.new(spawnLocation))
+		else
+			-- Try to move by setting position of first part
+			for _, child in ipairs(newVehicle:GetChildren()) do
+				if child:IsA("BasePart") then
+					child.Position = spawnLocation
+					break
+				end
+			end
+		end
 	end
 	
 	newVehicle.Parent = workspace
@@ -88,6 +98,7 @@ function VehicleSpawner:OnPlayerRequestVehicle(player, vehicleName)
 		local driverSeat = vehicle:FindFirstChild("DriveSeat", true) 
 			or vehicle:FindFirstChild("DriverSeat", true)
 			or vehicle:FindFirstChild("VehicleSeat", true)
+			or vehicle:FindFirstChild("Seat", true)
 		
 		-- If not found, collect all VehicleSeats and log them
 		if not driverSeat then
@@ -124,16 +135,6 @@ function VehicleSpawner:OnPlayerRequestVehicle(player, vehicleName)
 			local humanoidRootPart = player.Character:FindFirstChild("HumanoidRootPart")
 			
 			if humanoid and humanoidRootPart then
-				-- Disable any kickstand script temporarily
-				local interface = player.PlayerGui:FindFirstChild("Interface")
-				if interface then
-					local kickstandScript = interface:FindFirstChild("Kickstand", true)
-					if kickstandScript and kickstandScript:IsA("LocalScript") then
-						kickstandScript.Enabled = false
-						print("🔧 Temporarily disabled kickstand script for initial seating")
-					end
-				end
-				
 				-- Position player near the seat
 				humanoidRootPart.CFrame = driverSeat.CFrame + Vector3.new(0, 5, 0)
 				
@@ -143,17 +144,18 @@ function VehicleSpawner:OnPlayerRequestVehicle(player, vehicleName)
 				-- Now sit on the bike
 				driverSeat:Sit(humanoid)
 				
-				-- Wait and re-enable kickstand
-				task.wait(0.5)
-				if interface then
-					local kickstandScript = interface:FindFirstChild("Kickstand", true)
-					if kickstandScript and kickstandScript:IsA("LocalScript") then
-						kickstandScript.Enabled = true
-						print("✓ Re-enabled kickstand script")
-					end
+				-- Verify seating
+				task.wait(0.2)
+				if driverSeat.Occupant == humanoid then
+					print("✓ " .. player.Name .. " seated on " .. vehicle.Name .. " (Seat: " .. driverSeat.Name .. ")")
+				else
+					warn("⚠ Seating may have failed - occupant check failed")
+					-- Try one more time
+					task.wait(0.1)
+					driverSeat:Sit(humanoid)
 				end
-				
-				print("✓ " .. player.Name .. " seated on " .. vehicle.Name .. " (Seat: " .. driverSeat.Name .. ")")
+			else
+				warn("⚠ Cannot seat player: humanoid or HumanoidRootPart missing")
 			end
 		else
 			warn("DriverSeat/VehicleSeat not found in vehicle: " .. vehicle.Name)
@@ -162,8 +164,18 @@ function VehicleSpawner:OnPlayerRequestVehicle(player, vehicleName)
 			
 			-- At least teleport player near the bike
 			local humanoidRootPart = player.Character:FindFirstChild("HumanoidRootPart")
-			if humanoidRootPart and vehicle.PrimaryPart then
-				humanoidRootPart.CFrame = vehicle.PrimaryPart.CFrame + Vector3.new(0, 5, 0)
+			if humanoidRootPart then
+				if vehicle.PrimaryPart then
+					humanoidRootPart.CFrame = vehicle.PrimaryPart.CFrame + Vector3.new(0, 5, 0)
+				else
+					-- Find any part in the vehicle
+					for _, child in ipairs(vehicle:GetChildren()) do
+						if child:IsA("BasePart") then
+							humanoidRootPart.CFrame = child.CFrame + Vector3.new(0, 5, 0)
+							break
+						end
+					end
+				end
 			end
 		end
 	end
